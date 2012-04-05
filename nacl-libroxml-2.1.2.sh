@@ -50,7 +50,7 @@ CustomInstallStep() {
   readonly DEST_DIR="${NACL_SDK_BASE}/x86_64-nacl/lib${NACL_PACKAGES_BITSIZE}"
   readonly FILE="${NACL_PACKAGES_REPOSITORY}/${PACKAGE_NAME}/${PACKAGE_NAME}-build/libroxml.a"
   if [ -f "${FILE}" ]; then
-    cp "${FILE}" "${DEST_DIR}"$
+    cp "${FILE}" "${DEST_DIR}"
   fi
 }
 
@@ -66,5 +66,4 @@ CustomPackageInstall() {
 }
 
 CustomPackageInstall
-
 exit 0
