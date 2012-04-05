@@ -1,0 +1,51 @@
+--- libroxml-2.1.2-nacl/Makefile	2011-11-29 17:42:09.000000000 +0100
++++ libroxml-2.1.2/Makefile	2012-03-30 18:15:45.511199002 +0200
+@@ -19,12 +19,10 @@
+ OBJS = $(OBJ_LIB) $(OBJ_BIN)
+ OBJ_LIB = $(SRC_LIB:%.c=$O/%.o)
+ OBJ_BIN = $(SRC_BIN:%.c=$O/%.o)
+-TARGETS = $(TARGET_SLIB) $(TARGET_LN) $(TARGET_LIB) $(TARGET_BIN)
++TARGETS = $(TARGET_SLIB) $(TARGET_BIN)
+ TARGET_SLIB = $O/libroxml.a
+-TARGET_LIB = $O/libroxml.so.0
+-TARGET_LN = $O/libroxml.so
+ TARGET_BIN = $O/roxml
+-BINS = $(TARGET_SLIB) $(TARGET_LIB) $(TARGET_LN) $(TARGET_BIN)
++BINS = $(TARGET_SLIB) $(TARGET_BIN)
+ 
+ OS=$(shell uname)
+ 
+@@ -103,22 +101,12 @@
+ 	$E - ln -fs $^ $@
+ 
+ $(TARGET_BIN): $(OBJ_BIN)
+-$(TARGET_BIN): | $(if $(filter -static, $(LDFLAGS)), $(TARGET_SLIB), $(TARGET_LIB))
++$(TARGET_BIN): | $(if $(filter -static, $(LDFLAGS)), $(TARGET_SLIB))
+ 	$P '  LD      $(@F)'
+ 	$E $(CC) $(LDFLAGS) $^ -L$O -lroxml -lpthread -o $@
+ 
+ .PHONY : all
+-all : $(TARGET_SLIB) $(if $(filter -static, $(LDFLAGS)), , $(TARGET_LN)) $(TARGET_BIN)
+-
+-.PHONY : doxy
+-doxy : doxy.cfg man.cfg
+-	$P '  DOXYGEN'
+-	$E - doxygen doxy.cfg &>/dev/null
+-	$E - cp data/icons/roxml.png docs/html/
+-	$E - cp data/icons/libroxml-ex.png docs/html/
+-	$P '  MAN'
+-	$E - doxygen man.cfg &>/dev/null
+-	$E - chmod -R a+rw docs
++all : $(TARGET_SLIB) $(if $(filter -static, $(LDFLAGS)), ,) $(TARGET_BIN)
+ 
+ .PHONY: clean
+ clean:
+@@ -127,8 +115,6 @@
+ 
+ .PHONY : mrproper
+ mrproper : clean
+-	$P '  RM      docs'
+-	$E - rm -fr docs/man docs/html docs/latex
+ 	$P '  CLEAN   debian'
+ 	$E - $(FAKEROOT) $(MAKE) -f $(abspath $(DEBIAN_RULES)) clean &>/dev/null
+ 	$P '  CLEAN   fuse.xml'
